@@ -14,17 +14,17 @@ void CounterBase<Data>::doCalculations()
 /*takie listenery jak w Javie, ale jakiś sposób na pewno  */
 /*znajdziesz.                                             */
 /**********************************************************/
- time_t lastupdate = time(NULL);
+ boost::posix_time::ptime lastupdate = boost::posix_time::microsec_clock::local_time();
 
- long testtime = 26;
- time_t start = time(NULL);
+ boost::posix_time::time_duration testtime(boost::posix_time::seconds(26));
+ boost::posix_time::ptime start = boost::posix_time::microsec_clock::local_time();
 
- while((time(NULL) - start) < testtime)
+ while((boost::posix_time::microsec_clock::local_time() - start) < testtime)
  {
-  if ((time(NULL) - lastupdate) > deltat_) 
+  if ((boost::posix_time::microsec_clock::local_time() - lastupdate) > deltat_) 
   {
    this->Save();
-   lastupdate = time(NULL);
+   lastupdate = boost::posix_time::microsec_clock::local_time();
    cout << wynik_.x << endl;
   }
   this->Calculate();

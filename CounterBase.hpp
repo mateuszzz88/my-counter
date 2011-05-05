@@ -12,17 +12,17 @@ class CounterBase
   }     
 
   Data wynik_;
-  long deltat_;
+  boost::posix_time::time_duration deltat_;
   
  
  public:
-  CounterBase(const Data& start):         wynik_(start), deltat_(5) {};
-  CounterBase(const Data* start):         wynik_(start), deltat_(5) {};
-  CounterBase(const Data& start, long t): wynik_(start), deltat_(t) {};
-  CounterBase(const Data* start, long t): wynik_(start), deltat_(t) {};
-  CounterBase(long t):                                   deltat_(t) {}
+  CounterBase(const Data& start):         wynik_(start), deltat_(boost::posix_time::seconds(5)) {};
+  CounterBase(const Data* start):         wynik_(start), deltat_(boost::posix_time::seconds(5)) {};
+  CounterBase(const Data& start, long t): wynik_(start), deltat_(boost::posix_time::seconds(t)) {};
+  CounterBase(const Data* start, long t): wynik_(start), deltat_(boost::posix_time::seconds(t)) {};
+  CounterBase(long t):                                   deltat_(boost::posix_time::seconds(t)) {}
  
-  CounterBase(): deltat_(5) {};
+  CounterBase(): deltat_(boost::posix_time::seconds(5)) {};
   
   void doCalculations();
   void d() {cout << wynik_.x << endl;} 
