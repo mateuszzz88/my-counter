@@ -1,3 +1,5 @@
+#include "SignalCatcher.hpp"
+
 template<class Data>
 void CounterBase<Data>::doCalculations()
 {
@@ -19,7 +21,10 @@ void CounterBase<Data>::doCalculations()
  boost::posix_time::time_duration testtime(boost::posix_time::seconds(26));
  boost::posix_time::ptime start = boost::posix_time::microsec_clock::local_time();
 
- while((boost::posix_time::microsec_clock::local_time() - start) < testtime)
+ signal(SIGINT, catch_int);
+
+ while (!SIGINT_sent)
+// while((boost::posix_time::microsec_clock::local_time() - start) < testtime)
  {
   if ((boost::posix_time::microsec_clock::local_time() - lastupdate) > deltat_) 
   {
@@ -28,6 +33,12 @@ void CounterBase<Data>::doCalculations()
    cout << wynik_.x << endl;
   }
   this->Calculate();
+ }
+ 
+ if (SIGINT_sent)
+ {
+  this->Save();
+  this->d();
  }
 }
 /*Serializacja, zapis i odczyt, nic ciekawego, powinno działać*/

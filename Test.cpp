@@ -4,6 +4,8 @@
 #include<boost/archive/text_iarchive.hpp>
 #include<boost/serialization/split_member.hpp>
 #include<boost/date_time/posix_time/posix_time.hpp>
+#include<unistd.h>
+#include<signal.h>
 
 using namespace std;
 
