@@ -1,4 +1,6 @@
-/*Struktura do przechowywania wyników*/
+/**
+ * Struktura do przechowywania wyników
+ */
 struct DataStruct
 {
  int x;
