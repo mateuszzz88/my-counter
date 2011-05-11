@@ -1,6 +1,10 @@
 #include "SignalCatcher.hpp"
 
 template<class Data>
+/** 
+ * Funkcja rozpoczynająca obliczenia
+ * TODO: wątek obliczeń.
+ */
 void CounterBase<Data>::doCalculations()
 {
 /**********************************************************/
