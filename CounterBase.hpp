@@ -1,5 +1,10 @@
 /*Deklaracja klasy, na razie nie jest abstrakcyjna, ale będzie, póki co lepiej się w to nie bawić
  * bo tak jest łatwiej testować*/
+
+/** 
+ * Data - klasa do przechowywania wynikow; 
+ *        musi implementować metodę serialize oraz komplet konstruktorów.
+ */
 template<class Data>
 class CounterBase
 {
