@@ -1,12 +1,42 @@
 #include "SignalCatcher.hpp"
 
+
+template<class Data>
+void CounterBase<Data>::startCalculations()
+{
+//   thrd = boost::thread(doCalculations); // nie dziala
+  mutexFinish.lock();
+  stop = false;
+  cout<<"Starting thread" <<endl;
+  boost::thread(doCalculations);
+}
+
+template<class Data>
+void CounterBase<Data>::join()
+{
+  cout << "join()"<<endl;
+  mutexFinish.lock();
+  mutexFinish.unlock();
+}
+
+template<class Data>
+void CounterBase<Data>::stopCalculations()
+{
+  cout <<"stopCalculations()"<<endl;
+  stop=true;
+  join();
+}
+
+
+
 template<class Data>
 /** 
  * Funkcja rozpoczynająca obliczenia
- * TODO: wątek obliczeń.
  */
 void CounterBase<Data>::doCalculations()
 {
+  cout <<"doCalculations()" <<endl << flush;
+   
 /**********************************************************/
 /*Tą funkcję modyfikujesz przede wszystkim. W tym momencie*/
 /*wywołuje ona trwającą 26 sekund (testtime) pętlę while. */
@@ -27,7 +57,7 @@ void CounterBase<Data>::doCalculations()
 
  signal(SIGINT, catch_int);
 
- while (!SIGINT_sent)
+ while (!SIGINT_sent && !stop)
 // while((boost::posix_time::microsec_clock::local_time() - start) < testtime)
  {
   if ((boost::posix_time::microsec_clock::local_time() - lastupdate) > deltat_) 
@@ -44,6 +74,7 @@ void CounterBase<Data>::doCalculations()
   this->Save();
   this->d();
  }
+ mutexFinish.unlock();
 }
 /*Serializacja, zapis i odczyt, nic ciekawego, powinno działać*/
 template<class Data>
