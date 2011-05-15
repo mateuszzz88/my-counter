@@ -21,6 +21,9 @@ int main()
   DataStruct ds(35, 1);
   
   CounterBase<DataStruct> g(ds);
+//   g.startCalculations();
+//   sleep(10);
+//   g.stopCalculations();
   g.doCalculations();
   
  

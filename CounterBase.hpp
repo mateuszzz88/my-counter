@@ -1,3 +1,7 @@
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
+
+
 /*Deklaracja klasy, na razie nie jest abstrakcyjna, ale będzie, póki co lepiej się w to nie bawić
  * bo tak jest łatwiej testować*/
 
@@ -14,10 +18,19 @@ class CounterBase
   void serialize(Archive & ar, const unsigned int version)
   {
    ar & wynik_;
-  }     
+  }
+  /** 
+   * mutex used by join() function.
+   * If locked, it means calculations are in progress.
+   * TODO find better way to join threads
+   */
+  boost::mutex mutexFinish; 
+  
 
   Data wynik_;
   boost::posix_time::time_duration deltat_;
+  bool stop;
+//   boost::thread thrd; //problemy z przypisywaniem?
   
  
  public:
@@ -29,10 +42,37 @@ class CounterBase
  
   CounterBase(): deltat_(boost::posix_time::seconds(5)) {};
   
-  void doCalculations();
+  /**
+   * Starts calculations thread. 
+   * Encapsulates doCalculations();
+   */
+  void startCalculations();  
+  /** 
+   * Stops calculations; blocks until stopped;
+   */
+  void stopCalculations();  
+  /** 
+   * Blocks current thread until calculations are finished;
+   */
+  void join();
+  /** 
+   * Starts calculations in synchronous mode (in the same thread).
+   * If possible, only void Calculate() should be reimplemented
+   */
+  virtual void doCalculations();
+  void operator () (){
+    doCalculations();
+  }
+  
+  
   void d() {cout << wynik_.x << endl;} 
  protected:
   void Save();
   void Load();
+  
+
+  /** 
+   * Does single step calculation.
+   */
   virtual void Calculate(); 
 };
