@@ -1,17 +1,15 @@
-#include<iostream>
-#include<fstream>
-#include<boost/archive/text_oarchive.hpp>
-#include<boost/archive/text_iarchive.hpp>
-#include<boost/serialization/split_member.hpp>
-#include<boost/date_time/posix_time/posix_time.hpp>
-#include<unistd.h>
-#include<signal.h>
+#include <iostream>
+#include "myExampleTaskA.h"
+// #include<fstream>
+// #include<boost/date_time/posix_time/posix_time.hpp>
+// #include<unistd.h>
+// #include<signal.h>
 
 using namespace std;
 
-#include"DataStruct.hpp"
-#include"CounterBase.hpp"
-#include"CounterBaseFuns.hpp"
+// #include"DataStruct.hpp"
+// #include"CounterBase.hpp"
+// #include"CounterBaseFuns.hpp"
 
 void manualTest();
 
@@ -47,8 +45,10 @@ int main()
 
 
 void manualTest(){
-  DataStruct ds(35, 1);
-  CounterBase<DataStruct> g(ds);
+//   DataStruct ds(35, 1);
+//   CounterBase<DataStruct> g(ds);
+  BigPrimeData ds;
+  myExampleTaskA g(ds, 5);
   g.setSerializationFile("sfilename",true);
   string avilableCommands =
           "avilable commands: \n"

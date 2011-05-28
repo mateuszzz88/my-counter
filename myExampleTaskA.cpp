@@ -5,7 +5,7 @@
  * Created on 28 maj 2011, 15:21
  */
 
-/* 
+
 #include "myExampleTaskA.h"
 #include <math.h>
 
@@ -26,4 +26,3 @@ void myExampleTaskA::Calculate(){
     //TODO when to end?
 }
 
-*/
