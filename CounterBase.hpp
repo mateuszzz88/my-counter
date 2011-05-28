@@ -19,18 +19,18 @@ class CounterBase
   {
    ar & wynik_;
   }
-  /** 
-   * mutex used by join() function.
-   * If locked, it means calculations are in progress.
-   * TODO find better way to join threads
-   */
-  boost::mutex mutexFinish; 
+//   /**   // ZMIANA  -> teraz uzywac thrd.join()
+//    * mutex used by join() function.
+//    * If locked, it means calculations are in progress.
+//    * TODO find better way to join threads
+//    */
+//   boost::mutex mutexFinish; 
   
 
   Data wynik_;
   boost::posix_time::time_duration deltat_;
   bool stop;
-//   boost::thread thrd; //problemy z przypisywaniem?
+  boost::thread thrd; //problemy z przypisywaniem?
   
  
  public:
