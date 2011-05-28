@@ -65,7 +65,7 @@ void CounterBase<Data>::doCalculations()
   {
    this->Save();
    lastupdate = boost::posix_time::microsec_clock::local_time();
-   cout << wynik_.x << endl;
+//   cout << data.x << endl;
   }
   this->Calculate();
  }
@@ -73,7 +73,7 @@ void CounterBase<Data>::doCalculations()
  if (SIGINT_sent)
  {
   this->Save();
-  this->d();
+//  this->d();
  }
 }
 
@@ -115,8 +115,8 @@ bool CounterBase<Data>::Load()
 template<class Data>
 void CounterBase<Data>::Calculate()
 {
-  wynik_.x++;
-  if(wynik_.x > 30) wynik_.x = 0;
+  data.x++;
+  if(data.x > 30) data.x = 0;
 }
 
 
