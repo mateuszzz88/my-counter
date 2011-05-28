@@ -1,28 +1,32 @@
 #include "SignalCatcher.hpp"
+#include <boost/bind.hpp>
 
 
 template<class Data>
 void CounterBase<Data>::startCalculations()
 {
-//   thrd = boost::thread(doCalculations); // nie dziala
-  mutexFinish.lock();
+//   mutexFinish.lock();
   stop = false;
-  cout<<"Starting thread" <<endl;
-  boost::thread(doCalculations);
+  cout<<"startCalculations() => attempting to start calculation thread" <<endl;
+  thrd = boost::thread(boost::bind(&CounterBase<Data>::doCalculations,this));
 }
 
 template<class Data>
 void CounterBase<Data>::join()
 {
-  cout << "join()"<<endl;
-  mutexFinish.lock();
-  mutexFinish.unlock();
+	cout << "join() - attempting to join threads"<<endl;
+	if (thrd.joinable()){
+		thrd.join();
+		cout <<"join() - threads joined"<<endl;
+	} else {
+		cout <<"join() - thread not joinable"<<endl;
+	}
 }
 
 template<class Data>
 void CounterBase<Data>::stopCalculations()
 {
-  cout <<"stopCalculations()"<<endl;
+  cout <<"stopCalculations() => calculations scheduled to stop"<<endl;
   stop=true;
   join();
 }
@@ -32,7 +36,7 @@ void CounterBase<Data>::stopCalculations()
 template<class Data>
 void CounterBase<Data>::doCalculations()
 {
-  cout <<"doCalculations()" <<endl << flush;
+  cout <<"doCalculations() => calculations are started" <<endl << flush;
    
 /**********************************************************/
 /*Tą funkcję modyfikujesz przede wszystkim. W tym momencie*/
@@ -71,7 +75,7 @@ void CounterBase<Data>::doCalculations()
   this->Save();
   this->d();
  }
- mutexFinish.unlock();
+//  mutexFinish.unlock();
 }
 /*Serializacja, zapis i odczyt, nic ciekawego, powinno działać*/
 template<class Data>
