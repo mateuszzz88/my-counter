@@ -4,6 +4,12 @@ syntax: glob
 *~
 *.o
 tests/*.err
+nbproject
+Makefile-my-counter.mk
+.dep.inc
+sfilename
+test
+
 
 syntax: regexp
 .*\#.*\#$

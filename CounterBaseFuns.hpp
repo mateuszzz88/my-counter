@@ -1,5 +1,6 @@
 #include "SignalCatcher.hpp"
 #include <boost/bind.hpp>
+using namespace std;
 
 
 template<class Data>
@@ -13,7 +14,7 @@ void CounterBase<Data>::startCalculations()
 template<class Data>
 void CounterBase<Data>::join()
 {
-	cout << "join() - attempting to join threads"<<endl;
+        cout << "join() - attempting to join threads"<<endl;
 	if (thrd.joinable()){
 		thrd.join();
 		cout <<"join() - threads joined"<<endl;
@@ -80,22 +81,23 @@ void CounterBase<Data>::doCalculations()
 template<class Data>
 void CounterBase<Data>::Save()
 {
-  
-  std::ofstream ofs("filename", ios::binary);
-  {
-   boost::archive::text_oarchive oa(ofs);
-   oa << *this;
-  }
+    std::ofstream ofs(serializationFilePath.c_str(), std::ios::binary);
+    {
+        boost::mutex::scoped_lock(serializationMutex);
+        boost::archive::text_oarchive oa(ofs);
+        oa << *this;
+    }
 }
 
 template<class Data>
 void CounterBase<Data>::Load()
 {
-  std::ifstream ifs("filename", ios::binary);
-  { 
-   boost::archive::text_iarchive ia(ifs);
-   ia >> *this;
-  }
+    std::ifstream ifs(serializationFilePath.c_str(), std::ios::binary);
+    {
+        boost::mutex::scoped_lock(serializationMutex);
+        boost::archive::text_iarchive ia(ifs);
+        ia >> *this;
+    }
 }
 /*Ta funkcja w gotowym projekcie będzie abstrakcyjna, ale na razie nie chciałem się chrzanić z dziedziczeniem*/
 template<class Data>
@@ -103,4 +105,12 @@ void CounterBase<Data>::Calculate()
 {
   wynik_.x++;
   if(wynik_.x > 30) wynik_.x = 0;
+}
+
+
+template<class Data>
+void CounterBase<Data>::setSerializationFile(string filePath, bool load){
+    serializationFilePath = filePath;
+    if (load)
+        Load();
 }

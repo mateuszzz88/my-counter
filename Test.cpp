@@ -21,7 +21,7 @@ int main()
   manualTest();
   return 0;
   
-  
+  /*
   std::ofstream ofs("filename", ios::binary);
   DataStruct ds(35, 1);
   
@@ -41,18 +41,16 @@ int main()
         newg.d();
     }
 
- return 0;
+ return 0;*/
 }
 
 
 
 void manualTest(){
-  
-    
-  std::ofstream ofs("filename", ios::binary);
   DataStruct ds(35, 1);
   CounterBase<DataStruct> g(ds);
-  string avilableCommands = "avilable commands: \nexit, start_syn, start, stop\n";
+  g.setSerializationFile("sfilename",false);
+  string avilableCommands = "avilable commands: \nhelp, exit, start_syn, start, stop\n";
   cout <<avilableCommands;
   string input;
   
