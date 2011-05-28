@@ -5,7 +5,6 @@
 template<class Data>
 void CounterBase<Data>::startCalculations()
 {
-//   mutexFinish.lock();
   stop = false;
   cout<<"startCalculations() => attempting to start calculation thread" <<endl;
   thrd = boost::thread(boost::bind(&CounterBase<Data>::doCalculations,this));
@@ -75,8 +74,8 @@ void CounterBase<Data>::doCalculations()
   this->Save();
   this->d();
  }
-//  mutexFinish.unlock();
 }
+
 /*Serializacja, zapis i odczyt, nic ciekawego, powinno działać*/
 template<class Data>
 void CounterBase<Data>::Save()
