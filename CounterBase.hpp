@@ -1,5 +1,6 @@
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
+using namespace std;
 
 
 /*Deklaracja klasy, na razie nie jest abstrakcyjna, ale będzie, póki co lepiej się w to nie bawić
@@ -23,7 +24,9 @@ class CounterBase
   Data wynik_;
   boost::posix_time::time_duration deltat_;
   bool stop;
-  boost::thread thrd; 
+  boost::thread thrd;
+  string serializationFilePath;
+  boost::mutex serializationMutex;
   
  
  public:
@@ -63,9 +66,16 @@ class CounterBase
   void operator () (){
     doCalculations();
   }
+
+  /**
+   * Sets file to use for serialization
+   * @param filePath - path to serialization file
+   * @param load - if true, load state from file
+   */
+  void setSerializationFile(string filePath, bool load = true);
   
   
-  void d() {cout << wynik_.x << endl;} 
+  void d() {std::cout << wynik_.x << endl;}
  protected:
   /**
    * Saves class state to file
