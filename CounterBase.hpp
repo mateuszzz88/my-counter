@@ -18,19 +18,12 @@ class CounterBase
   void serialize(Archive & ar, const unsigned int version)
   {
    ar & wynik_;
-  }
-//   /**   // ZMIANA  -> teraz uzywac thrd.join()
-//    * mutex used by join() function.
-//    * If locked, it means calculations are in progress.
-//    * TODO find better way to join threads
-//    */
-//   boost::mutex mutexFinish; 
-  
+  }  
 
   Data wynik_;
   boost::posix_time::time_duration deltat_;
   bool stop;
-  boost::thread thrd; //problemy z przypisywaniem?
+  boost::thread thrd; 
   
  
  public:
@@ -64,6 +57,9 @@ class CounterBase
    */
   virtual void doCalculations();
   
+  /** 
+   * See @doCalculations()
+   */
   void operator () (){
     doCalculations();
   }
@@ -71,12 +67,21 @@ class CounterBase
   
   void d() {cout << wynik_.x << endl;} 
  protected:
+  /**
+   * Saves class state to file
+   */
   void Save();
+  /**
+   * Loads class state from file
+   */
   void Load();
   
 
   /** 
-   * Does single step calculation.
+   * Does single step calculation. 
+   * Main task of user is to reimplement this class. 
+   * If given task can't be divided into series of identical steps, 
+   * doCalculations() should be reimplemented (together with periodic calls to @Save())
    */
   virtual void Calculate(); 
 };
