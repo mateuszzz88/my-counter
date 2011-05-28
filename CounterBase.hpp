@@ -83,8 +83,9 @@ class CounterBase
   void Save();
   /**
    * Loads class state from file
+   * @return true if load successful
    */
-  void Load();
+  bool Load();
   
 
   /** 

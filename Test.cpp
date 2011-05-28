@@ -49,7 +49,7 @@ int main()
 void manualTest(){
   DataStruct ds(35, 1);
   CounterBase<DataStruct> g(ds);
-  g.setSerializationFile("sfilename",false);
+  g.setSerializationFile("sfilename",true);
   string avilableCommands =
           "avilable commands: \n"
           "help      - shows this list, \n"

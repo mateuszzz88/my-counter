@@ -90,14 +90,26 @@ void CounterBase<Data>::Save()
 }
 
 template<class Data>
-void CounterBase<Data>::Load()
+bool CounterBase<Data>::Load()
 {
+    bool success = false;
     std::ifstream ifs(serializationFilePath.c_str(), std::ios::binary);
-    {
-        boost::mutex::scoped_lock(serializationMutex);
-        boost::archive::text_iarchive ia(ifs);
-        ia >> *this;
+    if (ifs.is_open()) {
+        try {
+            boost::mutex::scoped_lock(serializationMutex);
+            boost::archive::text_iarchive ia(ifs);
+            ia >> *this;
+            success=true;
+        } catch (boost::archive::archive_exception ex) {
+            cout << "Load(): failed to load file '" << serializationFilePath << "'\n"
+                    << "because boost::archive::archive_exception was caught: \n"
+                    << ex.what() << endl;
+        }
+    } else { // !ifs.is_open()
+        cout << "Load(): failed to load file '" << serializationFilePath << "'\n"
+                << "file probably desn't exist or is not readable" << endl;
     }
+    return success;
 }
 /*Ta funkcja w gotowym projekcie będzie abstrakcyjna, ale na razie nie chciałem się chrzanić z dziedziczeniem*/
 template<class Data>
