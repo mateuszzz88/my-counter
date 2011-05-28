@@ -50,7 +50,14 @@ void manualTest(){
   DataStruct ds(35, 1);
   CounterBase<DataStruct> g(ds);
   g.setSerializationFile("sfilename",false);
-  string avilableCommands = "avilable commands: \nhelp, exit, start_syn, start, stop\n";
+  string avilableCommands =
+          "avilable commands: \n"
+          "help      - shows this list, \n"
+          "exit      - closes test program, \n"
+          "start_syn - starts calculations in main thread, \n"
+          "start     - creates calculations thread, \n"
+          "join      - waits for calculations thread to finish, \n"
+          "stop      - stops calculations thread\n";
   cout <<avilableCommands;
   string input;
   
@@ -64,6 +71,8 @@ void manualTest(){
       g.stopCalculations();
     } else if (input=="start_syn"){
       g.doCalculations();
+    } else if (input=="join"){
+      g.join();
     } else {
       cout <<"command not understood: "<<input <<endl <<avilableCommands <<flush;
 	}
