@@ -13,10 +13,15 @@ using namespace std;
 #include"CounterBase.hpp"
 #include"CounterBaseFuns.hpp"
 
-
+void manualTest();
 
 int main()
 {
+  
+  manualTest();
+  return 0;
+  
+  
   std::ofstream ofs("filename", ios::binary);
   DataStruct ds(35, 1);
   
@@ -37,4 +42,32 @@ int main()
     }
 
  return 0;
+}
+
+
+
+void manualTest(){
+  
+    
+  std::ofstream ofs("filename", ios::binary);
+  DataStruct ds(35, 1);
+  CounterBase<DataStruct> g(ds);
+  string avilableCommands = "avilable commands: \nexit, start_syn, start, stop\n";
+  cout <<avilableCommands;
+  string input;
+  
+  while (1) {
+    cin>>input;
+    if (input=="exit" || input=="quit") {
+      return;
+    } else if (input=="start") {
+      g.startCalculations();
+    } else if (input=="stop"){
+      g.stopCalculations();
+    } else if (input=="start_syn"){
+      g.doCalculations();
+    } else {
+      cout <<"command not understood: "<<input <<endl <<avilableCommands <<flush;
+	}
+  }
 }
