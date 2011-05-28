@@ -115,8 +115,9 @@ bool CounterBase<Data>::Load()
 template<class Data>
 void CounterBase<Data>::Calculate()
 {
-  data.x++;
-  if(data.x > 30) data.x = 0;
+//  task specific => deleted
+//  data.x++;
+//  if(data.x > 30) data.x = 0;*/
 }
 
 

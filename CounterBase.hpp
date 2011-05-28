@@ -1,5 +1,10 @@
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
+#include<boost/archive/text_oarchive.hpp>
+#include<boost/archive/text_iarchive.hpp>
+#include<boost/serialization/split_member.hpp>
+#include<iostream>
+#include<fstream>
 using namespace std;
 
 
