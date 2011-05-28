@@ -30,9 +30,6 @@ void CounterBase<Data>::stopCalculations()
 
 
 template<class Data>
-/** 
- * Funkcja rozpoczynająca obliczenia
- */
 void CounterBase<Data>::doCalculations()
 {
   cout <<"doCalculations()" <<endl << flush;

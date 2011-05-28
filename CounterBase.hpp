@@ -47,19 +47,23 @@ class CounterBase
    * Encapsulates doCalculations();
    */
   void startCalculations();  
+  
   /** 
    * Stops calculations; blocks until stopped;
    */
-  void stopCalculations();  
+  void stopCalculations(); 
+  
   /** 
    * Blocks current thread until calculations are finished;
    */
   void join();
+  
   /** 
    * Starts calculations in synchronous mode (in the same thread).
    * If possible, only void Calculate() should be reimplemented
    */
   virtual void doCalculations();
+  
   void operator () (){
     doCalculations();
   }
