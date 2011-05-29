@@ -1,4 +1,4 @@
-#include "SignalCatcher.hpp"
+#include "SignalCatcher.h"
 #include <boost/bind.hpp>
 using namespace std;
 
