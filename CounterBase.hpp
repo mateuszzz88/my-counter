@@ -34,13 +34,8 @@ class CounterBase
   
  
  public:
-  CounterBase(const Data& start):         data(start), deltat_(boost::posix_time::seconds(5)) {};
-  CounterBase(const Data* start):         data(start), deltat_(boost::posix_time::seconds(5)) {};
-  CounterBase(const Data& start, long t): data(start), deltat_(boost::posix_time::seconds(t)) {};
-  CounterBase(const Data* start, long t): data(start), deltat_(boost::posix_time::seconds(t)) {};
-  CounterBase(long t):                                   deltat_(boost::posix_time::seconds(t)) {}
- 
-  CounterBase(): deltat_(boost::posix_time::seconds(5)) {};
+  CounterBase(const Data& startData, long serialPeriod=5);
+  CounterBase(long serialPeriod=5);
   
   /**
    * Starts calculations thread. 

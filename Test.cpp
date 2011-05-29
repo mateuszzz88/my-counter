@@ -49,6 +49,7 @@ void manualTest(){
 //   CounterBase<DataStruct> g(ds);
   BigPrimeData ds;
   myExampleTaskA g(ds, 5);
+  //myExampleTaskA g; //takes default constructor of BigPrimeData
   g.setSerializationFile("sfilename",true);
   string avilableCommands =
           "avilable commands: \n"
