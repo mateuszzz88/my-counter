@@ -1,4 +1,4 @@
-#include "SignalCatcher.hpp"
+#include "SignalCatcher.h"
 
 bool SIGINT_sent = 0;
 bool SIGTSTP_sent = 0;

@@ -9,7 +9,7 @@ Makefile-my-counter.mk
 .dep.inc
 sfilename
 test
-
+.sconsign.dblite
 
 syntax: regexp
 .*\#.*\#$
