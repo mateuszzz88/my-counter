@@ -48,17 +48,13 @@ struct BigPrimeData {
 
 // 2. Now create worker class, derivate as shown
 
-class myExampleTaskA : public CounterBase<BigPrimeData> {
-    // 2a reimplement Calculate if task can be divided into sequential steps
-    void Calculate();
+// 2a reimplement Calculate if task can be divided into sequential steps
+template <>
+void CounterBase<BigPrimeData>::Calculate();
 
-public:
-    // 2b constructor is necessary and cant be dereived
-    myExampleTaskA(const BigPrimeData& start, long t = 5) : 
-    CounterBase<BigPrimeData> (start, t)
-    {};
-};
-
+// 2b typedef for easer usage
+typedef CounterBase<BigPrimeData> myExampleTaskA;
+    
 
 #endif	/* MYEXAMPLETASKA_H */
 

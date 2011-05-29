@@ -4,6 +4,16 @@ using namespace std;
 
 
 template<class Data>
+CounterBase<Data>::CounterBase(const Data& startData, long savePeriod)
+: data(startData), deltat_(boost::posix_time::seconds(savePeriod))
+{}
+
+template<class Data>
+CounterBase<Data>::CounterBase(long savePeriod)
+: data(Data()), deltat_(boost::posix_time::seconds(savePeriod))
+{}
+
+template<class Data>
 void CounterBase<Data>::startCalculations()
 {
   stop = false;

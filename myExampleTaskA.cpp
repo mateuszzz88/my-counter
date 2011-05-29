@@ -9,7 +9,8 @@
 #include "myExampleTaskA.h"
 #include <math.h>
 
-void myExampleTaskA::Calculate(){
+template <>
+void CounterBase<BigPrimeData>::Calculate() {
     long long beingChecked = data.lastChecked + 1;
     bool isPrime = true;
     for (int i=2; i<=sqrt(beingChecked); i++){
