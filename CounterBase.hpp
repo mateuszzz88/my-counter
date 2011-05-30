@@ -1,8 +1,12 @@
+#ifndef COUNTERBASE_HPP
+#define COUNTERBASE_HPP
+
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include<boost/archive/text_oarchive.hpp>
 #include<boost/archive/text_iarchive.hpp>
 #include<boost/serialization/split_member.hpp>
+#include <boost/signal.hpp>
 #include<iostream>
 #include<fstream>
 using namespace std;
@@ -27,13 +31,20 @@ class CounterBase
   }  
 
   boost::posix_time::time_duration deltat_;
-  bool stop;
+  volatile bool stop;
+  volatile bool finished;
   boost::thread thrd;
   string serializationFilePath;
   boost::mutex serializationMutex;
-  
- 
- public:
+
+
+public:
+  boost::signal<void ()> signalFinished;
+  boost::signal<void ()> signalSaved;
+  boost::signal<void ()> signalStarted;
+  boost::signal<void ()> signalStopped;
+  boost::signal<void ()> signalStepDone;
+
   CounterBase(const Data& startData, long serialPeriod=5);
   CounterBase(long serialPeriod=5);
   
@@ -72,6 +83,8 @@ class CounterBase
    * @param load - if true, load state from file
    */
   void setSerializationFile(string filePath, bool load = true);
+  void setFinished(bool finished);
+  bool isFinished() const;
   
   
 //  void d() {std::cout << data.x << endl;}
@@ -97,3 +110,6 @@ class CounterBase
    */
   virtual void Calculate(); 
 };
+
+
+#endif //COUNTERBASE_HPP

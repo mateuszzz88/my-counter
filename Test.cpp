@@ -1,4 +1,5 @@
 #include <iostream>
+#include <boost/bind.hpp>
 #include "myExampleTaskA.h"
 // #include<fstream>
 // #include<boost/date_time/posix_time/posix_time.hpp>
@@ -12,6 +13,8 @@ using namespace std;
 // #include"CounterBaseFuns.hpp"
 
 void manualTest();
+
+void onSignalStepDone() {cout <<"."<<flush;}
 
 int main()
 {
@@ -52,6 +55,7 @@ void manualTest(){
   myExampleTaskA g(ds, 5);
   //myExampleTaskA g; //takes default constructor of BigPrimeData
   g.setSerializationFile("sfilename",true);
+//  g.signalStepDone.connect(boost::bind(onSignalStepDone));
   string avilableCommands =
           "avilable commands: \n"
           "help      - shows this list, \n"
