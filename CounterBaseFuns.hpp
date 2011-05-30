@@ -69,6 +69,8 @@ void CounterBase<Data>::doCalculations()
  signal(SIGINT, catch_int);
  signal(SIGTSTP, catch_tstp);
  signal(SIGCONT, catch_cont);
+ signal(SIGTERM, catch_term);
+ signal(SIGUSR1, catch_usr1);
 
  while (!SIGINT_sent && !stop)
 // while((boost::posix_time::microsec_clock::local_time() - start) < testtime)
@@ -79,10 +81,18 @@ void CounterBase<Data>::doCalculations()
    lastupdate = boost::posix_time::microsec_clock::local_time();
 //   cout << data.x << endl;
   }
+
   if (!SIGTSTP_sent)
   {
    this->Calculate();
   }
+  
+  if (SIGUSR1_sent)
+  {
+    this->Save();
+    SIGUSR1_sent = 0;
+  }
+  
  }
  
  if (SIGINT_sent)
