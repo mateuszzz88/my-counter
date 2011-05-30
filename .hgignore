@@ -1,0 +1,15 @@
+syntax: glob
+*.orig
+*.rej
+*~
+*.o
+tests/*.err
+nbproject
+Makefile-my-counter.mk
+.dep.inc
+sfilename
+test
+.sconsign.dblite
+
+syntax: regexp
+.*\#.*\#$
