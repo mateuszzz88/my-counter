@@ -54,12 +54,17 @@ void manualTest(){
   g.setSerializationFile("sfilename",true);
   string avilableCommands =
           "avilable commands: \n"
-          "help      - shows this list, \n"
-          "exit      - closes test program, \n"
-          "start_syn - starts calculations in main thread, \n"
-          "start     - creates calculations thread, \n"
-          "join      - waits for calculations thread to finish, \n"
-          "stop      - stops calculations thread\n";
+          "help---------------- shows this list, \n"
+          "exit---------------- closes test program, \n"
+          "start_syn----------- starts calculations in main thread, \n"
+          "start--------------- creates calculations thread, \n"
+          "join---------------- waits for calculations thread to finish, \n"
+          "stop---------------- stops calculations thread\n"
+	  "avilable signals: \n"
+          "SIGINT and SIGTERM - stop all calculations\n"
+          "SIGTSTP------------- pauses and unpauses all calculations\n"
+          "SIGCONT------------- unpauses all calculations\n"
+          "SIGUSR1------------- saves progress\n\n";
   cout <<avilableCommands;
   string input;
   
