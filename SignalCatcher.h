@@ -3,28 +3,28 @@
 #include<signal.h>
 
 /**
- * Zmienna globalna przechowująca informację o tym, czy został wysłany sygnał SIGINT
+ * Global variable, which stores information about SIGINT signal status
  */
 
 extern bool SIGINT_sent;
 
 /**
- * Zmienna globalna przechowująca informację o zapauzowaniu programu
+ * Global variable, which stores information about SIGTSTP and SIGCONT signals status
  */
 
 extern bool SIGTSTP_sent;
 /**
- * Funkcja globalna przechwytująca sygnał SIGINT i zmieniająca wartość zmiennej SIGINT_sent na jeden, co pozwala odczytać później jej stan.
+ * Global function. Catches SIGINT signal and sets SIGINT_sent value to 1.
  */
 void catch_int(int sig_num);
 
 /**
- * Funkcja globalna przechwytująca sygnał SIGTSTP i zmieniająca wartość zmiennej SIGTSTP na przeciwną
+ * Global function. Catches SIGTSTP signal and sets SIGTSTP_sent value to opposite.
  */
 void catch_tstp(int sig_num);
 
 /**
- * Funkcja globalna przechwytująca sygnał SIGCONT i ustawiająca wartość zmiennej SIGTSTP_sent na 0
+ * Global function. Catches SIGCONT signal and sets SIGTSTP_sent value to 0.
  */
 
 void catch_cont(int sig_num);

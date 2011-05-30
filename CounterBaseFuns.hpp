@@ -67,6 +67,8 @@ void CounterBase<Data>::doCalculations()
  boost::posix_time::ptime start = boost::posix_time::microsec_clock::local_time();
 
  signal(SIGINT, catch_int);
+ signal(SIGTSTP, catch_tstp);
+ signal(SIGCONT, catch_cont);
 
  while (!SIGINT_sent && !stop)
 // while((boost::posix_time::microsec_clock::local_time() - start) < testtime)
@@ -77,12 +79,16 @@ void CounterBase<Data>::doCalculations()
    lastupdate = boost::posix_time::microsec_clock::local_time();
 //   cout << data.x << endl;
   }
-  this->Calculate();
+  if (!SIGTSTP_sent)
+  {
+   this->Calculate();
+  }
  }
  
  if (SIGINT_sent)
  {
   this->Save();
+  cout << "Calculations stopped." << endl;
 //  this->d();
  }
 }

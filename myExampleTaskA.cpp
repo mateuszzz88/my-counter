@@ -13,7 +13,7 @@ template <>
 void CounterBase<BigPrimeData>::Calculate() {
     long long beingChecked = data.lastChecked + 1;
     bool isPrime = true;
-    for (int i=2; i<=sqrt(beingChecked); i++){
+    for (int i=2; i<=sqrt(beingChecked); ++i){
         if (beingChecked%i==0){
             isPrime = false;
             break;
@@ -23,7 +23,9 @@ void CounterBase<BigPrimeData>::Calculate() {
     if (isPrime) {
         data.lastFound = beingChecked;
     }
-
     //TODO when to end?
+    //Answer: Kiedy skończy się zakres long long
+    //Przykładowo:
+    //if (beingChecked == 9223372036854775806) stop = true;
 }
 
