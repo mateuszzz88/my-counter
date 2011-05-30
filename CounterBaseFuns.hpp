@@ -67,7 +67,6 @@ void CounterBase<Data>::doCalculations() {
     }
 }
 
-/*Serializacja, zapis i odczyt, nic ciekawego, powinno działać*/
 template<class Data>
 void CounterBase<Data>::Save() {
     std::ofstream ofs(serializationFilePath.c_str(), std::ios::binary);
@@ -115,7 +114,7 @@ void CounterBase<Data>::setSerializationFile(string filePath, bool load) {
 
 template<class Data>
 void CounterBase<Data>::setFinished(bool finished) {
-    finished = finished;
+    this->finished = finished;
 }
 
 template<class Data>
