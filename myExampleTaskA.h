@@ -16,13 +16,15 @@ struct BigPrimeData {
     // 1a. Create as many fields as You like
     long long lastChecked;
     long long lastFound;
+    long long maxChecked;
 
     // 1b. If default constructors are not enough, create your own.
     // In simple cases shouldn't be necessary.
 
     BigPrimeData() :
     lastChecked(2),
-    lastFound(2)
+    lastFound(2),
+    maxChecked(10000000)
     {}
 
     /**
@@ -30,7 +32,8 @@ struct BigPrimeData {
      */
     BigPrimeData(const BigPrimeData & other) :
     lastChecked(other.lastChecked),
-    lastFound(other.lastFound)
+    lastFound(other.lastFound),
+    maxChecked(other.maxChecked)
     {}
 
     /**
@@ -43,6 +46,7 @@ struct BigPrimeData {
     void serialize(Archive & ar, const unsigned int version) {
         ar & lastChecked;
         ar & lastFound;
+        ar & maxChecked;
     }
 };
 
