@@ -48,14 +48,12 @@ int main()
 
 
 void manualTest(){
-//   DataStruct ds(35, 1);
-//   CounterBase<DataStruct> g(ds);
-//   TODO: Is it possible to start the calculations from the beginning?
   BigPrimeData ds;
   myExampleTaskA g(ds, 5);
   //myExampleTaskA g; //takes default constructor of BigPrimeData
   g.setSerializationFile("sfilename",true);
-//  g.signalStepDone.connect(boost::bind(onSignalStepDone));
+//  g.addSlotStepDone(boost::bind(onSignalStepDone)); //TODO why doesn't work??
+//  g.addSlotStepDone(onSignalStepDone);
   string avilableCommands =
           "avilable commands: \n"
           "help      - shows this list, \n"
