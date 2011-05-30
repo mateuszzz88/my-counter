@@ -129,5 +129,30 @@ bool CounterBase<Data>::isFinished() const {
     return finished;
 }
 
+template<class Data>
+boost::signals::connection CounterBase<Data>::addSlotFinished(void(*slot)() ){
+    return signalFinished.connect(boost::bind(slot));
+}
+
+template<class Data>
+boost::signals::connection CounterBase<Data>::addSlotStarted(void(*slot)() ){
+    return signalStarted.connect(boost::bind(slot));
+}
+
+template<class Data>
+boost::signals::connection CounterBase<Data>::addSlotStopped(void(*slot)() ){
+    return signalStopped.connect(boost::bind(slot));
+}
+
+template<class Data>
+boost::signals::connection CounterBase<Data>::addSlotSaved(void(*slot)() ){
+    return signalSaved.connect(boost::bind(slot));
+}
+
+template<class Data>
+boost::signals::connection CounterBase<Data>::addSlotStepDone(void(*slot)() ){
+    return signalStepDone.connect(boost::bind(slot));
+}
+
 
 #endif //COUNTERBASEFUNS

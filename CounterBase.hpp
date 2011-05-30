@@ -37,14 +37,13 @@ class CounterBase
   string serializationFilePath;
   boost::mutex serializationMutex;
 
-
-public:
   boost::signal<void ()> signalFinished;
   boost::signal<void ()> signalSaved;
   boost::signal<void ()> signalStarted;
   boost::signal<void ()> signalStopped;
   boost::signal<void ()> signalStepDone;
 
+public:
   CounterBase(const Data& startData, long serialPeriod=5);
   CounterBase(long serialPeriod=5);
   
@@ -85,6 +84,12 @@ public:
   void setSerializationFile(string filePath, bool load = true);
   void setFinished(bool finished);
   bool isFinished() const;
+
+  boost::signals::connection addSlotFinished(void (*slot)());
+  boost::signals::connection addSlotStarted(void (*slot)());
+  boost::signals::connection addSlotStopped(void (*slot)());
+  boost::signals::connection addSlotSaved(void (*slot)());
+  boost::signals::connection addSlotStepDone(void (*slot)());
   
   
 //  void d() {std::cout << data.x << endl;}
