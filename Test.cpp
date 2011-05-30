@@ -47,6 +47,7 @@ int main()
 void manualTest(){
 //   DataStruct ds(35, 1);
 //   CounterBase<DataStruct> g(ds);
+//   TODO: Is it possible to start the calculations from the beginning?
   BigPrimeData ds;
   myExampleTaskA g(ds, 5);
   //myExampleTaskA g; //takes default constructor of BigPrimeData

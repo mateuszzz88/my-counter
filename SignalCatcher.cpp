@@ -6,17 +6,23 @@ bool SIGTSTP_sent = 0;
 void catch_int(int sig_num)
 {
  signal(SIGINT, catch_int);
+ signal(SIGCONT, catch_cont);
+ signal(SIGTSTP, catch_tstp);
  SIGINT_sent = 1;
 }
 
 void catch_tstp(int sig_num)
 {
  signal(SIGTSTP, catch_tstp);
+ signal(SIGINT, catch_int);
+ signal(SIGCONT, catch_cont);
  SIGTSTP_sent = !SIGTSTP_sent;
 }
 
 void catch_cont(int sig_num)
 {
  signal(SIGCONT, catch_cont);
+ signal(SIGINT, catch_int);
+ signal(SIGTSTP, catch_tstp);
  SIGTSTP_sent = 0;
 }
