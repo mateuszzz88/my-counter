@@ -11,10 +11,6 @@
 #include <fstream>
 using namespace std;
 
-
-/*Deklaracja klasy, na razie nie jest abstrakcyjna, ale będzie, póki co lepiej się w to nie bawić
- * bo tak jest łatwiej testować*/
-
 /** 
  * Data - klasa do przechowywania wynikow; 
  *        musi implementować metodę serialize oraz komplet konstruktorów.
@@ -45,6 +41,10 @@ private:
     boost::signal<void () > signalSaved;
 
 public:
+    /**
+     * @param startData  - initial data
+     * @param serialPeriod - period (in seconds) of saving state of calculations
+     */
     CounterBase(const Data& startData, long serialPeriod = 5);
     CounterBase(long serialPeriod = 5);
 
@@ -83,21 +83,39 @@ public:
      * @param load - if true, load state from file
      */
     void setSerializationFile(string filePath, bool load = true);
-    void setFinished(bool finished);
+    /**
+     * sets finished state to given argument; for use in void Calculate()
+     * @param finished
+     */
+    void setFinished(bool finished = true);
+    /**
+     * Checks whether calculations are finished or not
+     * @return true if finished
+     */
     bool isFinished() const;
 
+    /**
+     * Functions to add callbacks in events of:
+     * * starting calculations (real start, not scheduling)
+     * * stopping calculations (real)
+     * * calculations finished
+     * * single step of calculations finished
+     * * data being saved to disk
+     * @param slot callback function void funName()
+     * @return signals::connection object that can be used to break connection
+     */
     boost::signals::connection addSlotStarted(void (*slot)());
     boost::signals::connection addSlotStopped(void (*slot)());
     boost::signals::connection addSlotFinished(void (*slot)());
     boost::signals::connection addSlotStepDone(void (*slot)());
     boost::signals::connection addSlotSaved(void (*slot)());
     Data getDataCopy() const;
-
-
-    //  void d() {std::cout << data.x << endl;}
 protected:
 
-
+    /**
+     * For use in Calculate(), gives access to data structure
+     * @return
+     */
     Data& data();
 
     /**
