@@ -6,7 +6,7 @@
 #ifndef MYEXAMPLETASKA_H
 #define	MYEXAMPLETASKA_H
 
-#include "MyCounter.hpp"
+#include "../CounterBase/MyCounter.hpp"
 
 
 // 1. First create structure to store calculation data

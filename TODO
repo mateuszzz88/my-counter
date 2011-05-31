@@ -4,5 +4,7 @@ TODO
    Jakieś szczególne uproszczenia nie są chyba konieczne - jeśli użytkownik używa
    sygnałów to będzie też wiedział jak je połączyć do tych funkcji
 2. jak wygląda serializacja w przypadku wskaźników?
+
+Zrobione:
 3. testy jednostkowe
 4. może jakieś rozdzielenie na foldery by był większy porządek

@@ -10,6 +10,8 @@ Makefile-my-counter.mk
 sfilename
 test
 .sconsign.dblite
+unittestdata
+utest
 
 syntax: regexp
 .*\#.*\#$
