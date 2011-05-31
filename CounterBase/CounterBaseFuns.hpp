@@ -51,12 +51,29 @@ void CounterBase<Data>::doCalculations() {
         signalStarted();
         boost::posix_time::ptime lastupdate = boost::posix_time::microsec_clock::local_time();
 
-        while (!stop && !isFinished()) {
+        signal(SIGTSTP, catch_tstp);
+        signal(SIGINT, catch_int);
+        signal(SIGCONT, catch_cont);
+        signal(SIGTERM, catch_term);
+        signal(SIGUSR1, catch_usr1);
+
+
+        while (!stop && !isFinished() && !SIGINTorTERM_sent) {
             if ((boost::posix_time::microsec_clock::local_time() - lastupdate) > deltat_) {
                 this->Save();
                 lastupdate = boost::posix_time::microsec_clock::local_time();
             }
-            this->Calculate();
+            if (!SIGTSTP_sent)
+            {
+              this->Calculate();
+            }
+
+            if (SIGUSR1_sent)
+            {
+              this->Save();
+              sleep(100);
+              SIGUSR1_sent=0;
+            }
             signalStepDone();
         }
 
