@@ -3,10 +3,10 @@
 #include<signal.h>
 
 /**
- * Global variable, which stores information about SIGINT signal status
+ * Global variable, which stores information about SIGINT and SIGTERM signal status
  */
 
-extern bool SIGINT_sent;
+extern bool SIGINTorTERM_sent;
 
 /**
  * Global variable, which stores information about SIGTSTP and SIGCONT signals status
