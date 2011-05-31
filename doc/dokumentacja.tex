@@ -9,7 +9,7 @@
 \usepackage{setspace}
 
 \author{Przemysław Ogorzałek\\Mateusz Lewicki}
-\title{ZPR\\Projekt\\Klasa bazowa do obliczeń\\Dokumentacja końcowa}
+\title{ZPR\\Projekt\\Klasa bazowa do długotrwałych obliczeń\\Dokumentacja końcowa}
 
 \begin{document}
 \maketitle
@@ -80,7 +80,7 @@ Jeśli w~strukturze użytkownika znajdują się wskaźniki, należy podać w~fun
 \begin{verbatim}
 ar & *wskaznik;
 \end{verbatim}
-Składowa przechowująca obiekt struktury podanej przez użytkownika nazywa się \texttt{\_data}.\\
+Składowa przechowująca obiekt struktury podanej przez użytkownika nazywa się \texttt{data}.\\
 Dla typów wbudowanych nie jest konieczne tworzenie funkcji serializacji, więc jeśli do zapisu wyników wystarczy nam na przykład liczba typu \texttt{int}, tworzenie osobnej struktury jest zbędne.\\
 ~\\
 Aby przeprowadzić obliczenia konieczna jest również własna implementacja metody \texttt{Calculate()} będącej częścią klasy \texttt{CounterBase}. 
@@ -109,7 +109,7 @@ Aby implementacja działała poprawnie obliczenia muszą być podzielone na mał
 Każde wywołanie funkcji \texttt{Calculate()} to przejście przez kolejny etap.\\
 Zapisanie postępów pracy dokonuje się pomiędzy kolejnymi wywołaniami funkcji, co pewien określony czas.
 Odstęp między kolejnymi zapisami zachowany jest zatem z~dokładnością do czasu trwania pojedynczego wywołania funkcji.\\
-Po zakończeniu obliczeń należy zmienić wartość pola klasy \texttt{stop} należącego do klasy \texttt{CounterBase} na przeciwną.
+Po zakończeniu obliczeń należy zmienić wartość pola klasy \texttt{finished} należącego do klasy \texttt{CounterBase} na texttt{true} za pomocą metody \texttt{setFinished()}.
 Wynik końcowy zostanie wówczas zapisany, a~obliczenia zakończą się.\\
 ~\\
 W~przypadku, gdzy podzielenie obliczeń na wiele wywołań funkcji \texttt{Calculate()} jest niemożliwe, konieczna jest ponowna implementacja funkcji \texttt{doCalculate()}, zarządzającej obliczeniami i~zapisywaniem wyników. 
@@ -122,25 +122,39 @@ Aby kompliacja przebiegła pomyślnie kompilator musi mieć dostęp do bibliotek
 \item \texttt{boost::thread} 
 \item \texttt{boost::bind}
 \item \texttt{boost::date\_time}
-\item \texttt{boost::signal}
+\item \texttt{boost::signals}
 \end{itemize}
 \subsection{Prowadzenie obliczeń}
 Użytkownik komunikuje się z~programem poprzez wpisywanie w~konsoli odpowiednich komend, jak i~poprzez sygnały systemowe. 
 Na początku działania programu lub po wpisaniu polecenia \texttt{help} wyświetla się lista dostępnych poleceń i~sygnałów\footnote{W~systemach opartycha na UNIX sygnały systemowe wysyła się poleceniem\\\texttt{kill -SYGNAŁ PID}\\gdzie \texttt{SYGNAŁ} to nazwa sygnału, a \texttt{PID} to numer identyfikacyjny procesu, w ramach którego działa program.\\Listę procesów wraz z~numerami można wyświetlić poleceniem\\\texttt{ps -a}}.\\
-Obliczenia mogą być prowadzone bądź w~wątku głównym, bądź w~utworzonym specjalnie do tego celu.
+Obliczenia mogą być prowadzone bądź w~wątku głównym (uruchomienie synchroniczne), bądź w~utworzonym specjalnie do tego celu(uruchomienie asynchroniczne).
 
 \section{Działanie klasy bazowej}
 W~zależności od potrzeb wczytywany jest plik z~ostatnio zapisanym wynikiem lub obliczenia zaczynane są od początku.
 Co pewien czas postęp obliczeń jest zapisywany. 
 Zapisu dokonać można również wysyłając sygnał \texttt{SIGUSR1}.\\
 Aby zapuzować obliczenia wysyłamy sygnał \texttt{SIGTSTP}\footnote{Zwykle można tego dokonać poprzez skrót klawiaturowy \texttt{CTRL+z}}. 
-Nawet jeśli obliczenia są zapauzowane, aktualny wynik nadal jest zapisywany.
 Aby wznowić działanie programu, albo wysyłamy ponownie \texttt{SIGTSTP}, albo wysyłamy sygnał \texttt{SIGCONT}.
 Wysłanie \texttt{SIGCONT} jeśli program działa jest ignorowane.\\
 Aby przerwać obliczenia wpisujemy komendę stop, lub wysyłamy jeden z~sygnałów: \texttt{SIGINT}\footnote{Zwykle można tego dokonać poprzez skrót klawiaturowy \texttt{CTRL+c}} lub \texttt{SIGTERM}.
 Wynik obliczeń zostanie wtedy zapisany, a~wątki prowadzące obliczenia zakończą się.\\
 ~\\
 Aby przeprowadzać kolejne kroki obliczeń, funkcja \texttt{doCalculate()} odczytuje wartość poszczególnych flag i~w~zależności od ich wartości zapisuje wynik, wywołuje funkcję \texttt{Calculate()} lub przerywa wątek.
+
+\section{Użycie funkcji callback}
+Klasa \texttt{CounterBase} ułatwia komunikację z innymi częściami programu za pomocą sygnałów biblioteki \texttt{boost::signals}. 
+Klasa umożliwia dodanie callbacków do następujących wydarzeń:
+\begin{itemize}
+\item start obliczeń - dopiero gdy obliczenia rzeczywiście zaczną być wykonywane, nie gdy zostaną zlecone;
+\item pauza - dopiero gdy wątek obliczeń zostanie zakończony a wynik pośredni zapisany;
+\item koniec obliczeń - gdy obliczenia zostaną kończone i zapisane;
+\item zapis wyniku pośredniego - gdy zostanie zakończony zapis na dysk;
+\item ukończenie obliczenia pośredniego - gdy zostanie zakończony pojedynczy krok obliczeniowy.
+\end{itemize}
+Do sygnałów tych można podłączyć dowolną liczbę callbacków.
+Zostaną one wykonane w kolejności dodawania.
+Funkcje dodawania callbacków zwracają obiekty typu \texttt{boost::signals::connection} który można użyć do przerwania połączenia.
+
 \section{Napotkane problemy}
 \subsection{Serializacja}
 Aby klasa poprawnie realizowała założenia projektu musi spełnić dwa przeciwstawne warunki: umożliwić zapis dowolnego typu danych do pliku i~nałożyć na użytkownika końcowego jak najmniej obowiązków związanych z~implementacją klasy.\\
@@ -168,7 +182,6 @@ Wykorzystywane sygnały systemowe to:
 \end{itemize}
 Mechanizm ten pozwala w~łatwy sposób przesyłać odpowiednie informacje i~pozwala wykorzystać narzędzia dostarczane przez system operacyjny, co pozwala ograniczyć rozmiar kodu programu.
 Wadą tego mechanizmu jest niemożność jego wykorzystania na platformie Windows. 
-
 \section{Podsumowanie}
 Zaprojektowana i~stworzona klasa spełnia wszystkie wstępne założenia projektowe.\\
 Zapewnia odpowiednie funkcjonalności, takie jak zapisywanie i~odczytywanie postępów pracy, pauzowanie, czy wznawianie obliczeń.
