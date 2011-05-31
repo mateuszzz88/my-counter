@@ -45,25 +45,34 @@ void CounterBase<Data>::stopCalculations() {
 
 template<class Data>
 void CounterBase<Data>::doCalculations() {
-    cout << "doCalculations() => calculations are started" << endl << flush;
-    signalStarted();
-    boost::posix_time::ptime lastupdate = boost::posix_time::microsec_clock::local_time();
+    try {
+        cout << "doCalculations() => calculations are started" << endl << flush;
+        signalStarted();
+        boost::posix_time::ptime lastupdate = boost::posix_time::microsec_clock::local_time();
 
-    while (!stop && !isFinished()) {
-        if ((boost::posix_time::microsec_clock::local_time() - lastupdate) > deltat_) {
-            this->Save();
-            lastupdate = boost::posix_time::microsec_clock::local_time();
+        while (!stop && !isFinished()) {
+            if ((boost::posix_time::microsec_clock::local_time() - lastupdate) > deltat_) {
+                this->Save();
+                lastupdate = boost::posix_time::microsec_clock::local_time();
+            }
+            this->Calculate();
+            signalStepDone();
         }
-        this->Calculate();
-        signalStepDone();
-    }
 
-    this->Save();
-    cout << "Calculations stopped." << endl;
-    if (isFinished()) {
-        signalFinished();
-    } else if (stop) {
-        signalStopped();
+        this->Save();
+        cout << "Calculations stopped." << endl;
+        if (isFinished()) {
+            signalFinished();
+        } else if (stop) {
+            signalStopped();
+        }
+    } catch (const std::exception& ex) {
+        cout << "Caught std::exception in CouterBase class: "<<endl
+                <<ex.what() <<endl
+                <<"Abandoning calculations."<<endl;
+    } catch (...) {
+        cout << "Caught nonstandard exception in CouterBase class."<<endl
+                <<"Abandoning calculations."<<endl;
     }
 }
 
