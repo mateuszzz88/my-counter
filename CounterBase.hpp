@@ -26,7 +26,7 @@ private:
 
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version) {
-        ar & data;
+        ar & _data;
     }
 
     boost::posix_time::time_duration deltat_;
@@ -35,6 +35,8 @@ private:
     boost::thread thrd;
     string serializationFilePath;
     boost::mutex serializationMutex;
+    Data _data;
+    mutable boost::mutex dataAccessMutex;
 
     boost::signal<void () > signalStarted;
     boost::signal<void () > signalStopped;
@@ -89,12 +91,15 @@ public:
     boost::signals::connection addSlotFinished(void (*slot)());
     boost::signals::connection addSlotStepDone(void (*slot)());
     boost::signals::connection addSlotSaved(void (*slot)());
+    Data getDataCopy() const;
 
 
     //  void d() {std::cout << data.x << endl;}
 protected:
 
-    Data data;
+
+    Data& data();
+
     /**
      * Saves class state to file
      */

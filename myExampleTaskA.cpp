@@ -6,7 +6,7 @@ template <>
 void CounterBase<BigPrimeData>::Calculate()
 {
     // 3c. inspect and modify data property in any way necessary to complete task
-    long long beingChecked = data.lastChecked + 1;
+    long long beingChecked = data().lastChecked + 1;
     bool isPrime = true;
     for (int i = 2; i <= sqrt(beingChecked); ++i) {
         if (beingChecked % i == 0) {
@@ -14,9 +14,9 @@ void CounterBase<BigPrimeData>::Calculate()
             break;
         }
     }
-    data.lastChecked = beingChecked;
+    data().lastChecked = beingChecked;
     if (isPrime) {
-        data.lastFound = beingChecked;
+        data().lastFound = beingChecked;
     }
 
     //sleep() is needed only for presentational purposes - allows to
@@ -26,7 +26,7 @@ void CounterBase<BigPrimeData>::Calculate()
     // 3a when final outcome is achieved, call setFinished(true) to notify
     // all interested about finished task and stop calculation loop.
     // This step is optional, calculations can be expected to be stopped manually.
-    if (data.lastChecked >= data.maxChecked)
+    if (data().lastChecked >= data().maxChecked)
         setFinished(true);
 }
 
