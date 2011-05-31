@@ -13,17 +13,18 @@
 // In simple cases primitive types will do just fine
 
 struct BigPrimeData {
-    // 1a. Create as many fields as You like
-    long long lastChecked;
-    long long lastFound;
-    long long maxChecked;
+    typedef long long VLong;
+    // 1a. Create as many fields as You like, pointers are only slightly trickier
+    VLong lastChecked;
+    VLong *lastFound;
+    VLong maxChecked;
 
     // 1b. If default constructors are not enough, create your own.
     // In simple cases shouldn't be necessary.
 
     BigPrimeData() :
     lastChecked(2),
-    lastFound(2),
+    lastFound(new VLong(2)),
     maxChecked(100)
     {}
 
@@ -32,7 +33,7 @@ struct BigPrimeData {
      */
     BigPrimeData(const BigPrimeData & other) :
     lastChecked(other.lastChecked),
-    lastFound(other.lastFound),
+    lastFound(new VLong(*other.lastFound)),
     maxChecked(other.maxChecked)
     {}
 
@@ -41,11 +42,12 @@ struct BigPrimeData {
      * It's sufficient to list all structure's fields in format:
      * ar & fieldName1;
      * ar & fieldName2;
+     * ar & *pointer1;
      */
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version) {
         ar & lastChecked;
-        ar & lastFound;
+        ar & *lastFound;
         ar & maxChecked;
     }
 };

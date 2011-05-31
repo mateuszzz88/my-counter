@@ -16,7 +16,7 @@ void CounterBase<BigPrimeData>::Calculate()
     }
     data().lastChecked = beingChecked;
     if (isPrime) {
-        data().lastFound = beingChecked;
+        *(data().lastFound) = beingChecked;
     }
 
     //sleep() is needed only for presentational purposes - allows to
