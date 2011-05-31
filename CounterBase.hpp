@@ -20,7 +20,7 @@ using namespace std;
  *        musi implementować metodę serialize oraz komplet konstruktorów.
  */
 template<class Data>
-class CounterBase {
+class CounterBase : public boost::signals::trackable {
 private:
     friend class boost::serialization::access;
 
