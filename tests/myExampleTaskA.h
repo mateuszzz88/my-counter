@@ -6,7 +6,7 @@
 #ifndef MYEXAMPLETASKA_H
 #define	MYEXAMPLETASKA_H
 
-#include "../CounterBase/MyCounter.hpp"
+#include "MyCounter.hpp"
 
 
 // 1. First create structure to store calculation data
@@ -14,26 +14,24 @@
 
 struct BigPrimeData {
     // 1a. Create as many fields as You like
-    long long lastChecked;
-    long long lastFound;
-    long long maxChecked;
+    typedef long long VLong;
+    VLong *lastChecked;
+    VLong lastFound;
 
     // 1b. If default constructors are not enough, create your own.
     // In simple cases shouldn't be necessary.
 
     BigPrimeData() :
-    lastChecked(2),
-    lastFound(2),
-    maxChecked(100)
+    lastChecked(new VLong(2)),
+    lastFound(2)
     {}
 
     /**
      * Copy constructor - will be used!
      */
     BigPrimeData(const BigPrimeData & other) :
-    lastChecked(other.lastChecked),
-    lastFound(other.lastFound),
-    maxChecked(other.maxChecked)
+    lastChecked(new VLong(*(other.lastChecked))),
+    lastFound(other.lastFound)
     {}
 
     /**
@@ -44,9 +42,8 @@ struct BigPrimeData {
      */
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version) {
-        ar & lastChecked;
+        ar & *lastChecked;
         ar & lastFound;
-        ar & maxChecked;
     }
 };
 
