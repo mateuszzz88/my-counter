@@ -50,9 +50,38 @@ int test_main( int, char *[] )
     g.stopCalculations();
     BOOST_CHECK(callsStarted == 1);
     BOOST_CHECK(callsStopped == 1);
+    BOOST_CHECK(!g.isFinished());
     d = g.getDataCopy();
     BOOST_CHECK(d.lastChecked==6);
     BOOST_CHECK(d.lastFound==5);
+    BOOST_CHECK(callsStepDone==4);
+    BOOST_CHECK(callsSaved==1);
+
+
+    //create new calculation thread, this time load data
+    callsStepDone = callsStarted = callsStopped = 0;
+    myExampleTaskA h;
+    h.addSlotFinished(slotFinished);
+    h.addSlotStepDone(slotStepDone);
+    h.addSlotStarted(slotStarted);
+    h.addSlotStopped(slotStopped);
+    h.addSlotSaved(slotSaved);
+    h.setSerializationFile("unittestdata", true); //loading data
+
+    //assert data is the same
+    BigPrimeData d2 = h.getDataCopy();
+    BOOST_CHECK(d.lastChecked==d2.lastChecked);
+    BOOST_CHECK(d.lastFound==d2.lastFound);
+    
+    h.startCalculations();
+    h.join();
+    BOOST_CHECK(h.isFinished());
+    BOOST_CHECK(callsStarted == 1);
+    BOOST_CHECK(callsFinished    == 1);
+    BigPrimeData d3 = h.getDataCopy();
+    BOOST_CHECK(d3.lastChecked==100);
+    BOOST_CHECK(d3.lastFound==97);
+
 
     return 0;
 }
