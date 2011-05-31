@@ -34,7 +34,7 @@ int test_main( int, char *[] )
 
     g.setSerializationFile("unittestdata", false);
 
-    BigPrimeData d = g.getData();
+    BigPrimeData d = g.getDataCopy();
 
     // assert initally everything is as expected
     BOOST_REQUIRE(callsStepDone == 0);
@@ -50,7 +50,7 @@ int test_main( int, char *[] )
     g.stopCalculations();
     BOOST_CHECK(callsStarted == 1);
     BOOST_CHECK(callsStopped == 1);
-    d = g.getData();
+    d = g.getDataCopy();
     BOOST_CHECK(d.lastChecked==6);
     BOOST_CHECK(d.lastFound==5);
 

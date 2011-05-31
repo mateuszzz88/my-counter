@@ -3,17 +3,18 @@
 #include "SignalCatcher.h"
 #include "CounterBase.hpp"
 #include <boost/bind.hpp>
+#include <boost/thread.hpp>
 using namespace std;
 
 template<class Data>
 CounterBase<Data>::CounterBase(const Data& startData, long savePeriod)
-: data(startData), deltat_(boost::posix_time::seconds(savePeriod)),
+: _data(startData), deltat_(boost::posix_time::seconds(savePeriod)),
 stop(false), finished(false) {
 }
 
 template<class Data>
 CounterBase<Data>::CounterBase(long savePeriod)
-: data(Data()), deltat_(boost::posix_time::seconds(savePeriod)),
+: _data(Data()), deltat_(boost::posix_time::seconds(savePeriod)),
 stop(false), finished(false) {
 }
 
@@ -156,5 +157,18 @@ boost::signals::connection CounterBase<Data>::addSlotStepDone(void(*slot)()) {
     return signalStepDone.connect(boost::bind(slot));
 }
 
+template<class Data>
+Data CounterBase<Data>::getDataCopy() const {
+    dataAccessMutex.lock();
+    Data ret = _data;
+    dataAccessMutex.unlock();
+    return ret;
+}
+
+template<class Data>
+Data& CounterBase<Data>::data() {
+    boost::mutex::scoped_lock sc(dataAccessMutex);
+    return _data;
+}
 
 #endif //COUNTERBASEFUNS
