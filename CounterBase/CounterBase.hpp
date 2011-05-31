@@ -61,6 +61,10 @@ private:
     boost::signal<void () > signalSaved;
 
 public:
+    /**		
+     * @param startData  - initial data		
+     * @param serialPeriod - period (in seconds) of saving state of calculations		
+     */
     CounterBase(const Data& startData, long serialPeriod = 5);
     CounterBase(long serialPeriod = 5);
 
@@ -99,7 +103,16 @@ public:
      * @param load - if true, load state from file
      */
     void setSerializationFile(string filePath, bool load = true);
-    void setFinished(bool finished);
+    
+    /**	
+     * sets finished state to given argument; for use in void Calculate()		
+     * @param finished		
+     */		
+    void setFinished(bool finished = true);	
+    /**		
+     * Checks whether calculations are finished or not		
+     * @return true if finished		
+     */
     bool isFinished() const;
 
     boost::signals::connection addSlotStarted(void (*slot)());
@@ -112,7 +125,10 @@ public:
 
 protected:
 
-
+    /** 
+     * For use in Calculate(), gives access to data structure		
+     * @return		
+     */
     Data& data();
 
     /**
