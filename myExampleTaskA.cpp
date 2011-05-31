@@ -18,6 +18,10 @@ void CounterBase<BigPrimeData>::Calculate()
     if (isPrime) {
         data.lastFound = beingChecked;
     }
+
+    //sleep() is needed only for presentational purposes - allows to
+    // predict outcome of calculations after given time.
+    boost::this_thread::sleep(boost::posix_time::milliseconds(100));
     
     // 3a when final outcome is achieved, call setFinished(true) to notify
     // all interested about finished task and stop calculation loop.

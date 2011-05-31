@@ -24,7 +24,7 @@ struct BigPrimeData {
     BigPrimeData() :
     lastChecked(2),
     lastFound(2),
-    maxChecked(10000000)
+    maxChecked(100)
     {}
 
     /**
