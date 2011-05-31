@@ -80,7 +80,7 @@ Jeśli w~strukturze użytkownika znajdują się wskaźniki, należy podać w~fun
 \begin{verbatim}
 ar & *wskaznik;
 \end{verbatim}
-Składowa przechowująca obiekt struktury podanej przez użytkownika nazywa się \texttt{data}.\\
+Składowa przechowująca obiekt struktury podanej przez użytkownika nazywa się \texttt{\_data}.\\
 Dla typów wbudowanych nie jest konieczne tworzenie funkcji serializacji, więc jeśli do zapisu wyników wystarczy nam na przykład liczba typu \texttt{int}, tworzenie osobnej struktury jest zbędne.\\
 ~\\
 Aby przeprowadzić obliczenia konieczna jest również własna implementacja metody \texttt{Calculate()} będącej częścią klasy \texttt{CounterBase}. 
@@ -122,6 +122,7 @@ Aby kompliacja przebiegła pomyślnie kompilator musi mieć dostęp do bibliotek
 \item \texttt{boost::thread} 
 \item \texttt{boost::bind}
 \item \texttt{boost::date\_time}
+\item \texttt{boost::signal}
 \end{itemize}
 \subsection{Prowadzenie obliczeń}
 Użytkownik komunikuje się z~programem poprzez wpisywanie w~konsoli odpowiednich komend, jak i~poprzez sygnały systemowe. 
@@ -167,6 +168,7 @@ Wykorzystywane sygnały systemowe to:
 \end{itemize}
 Mechanizm ten pozwala w~łatwy sposób przesyłać odpowiednie informacje i~pozwala wykorzystać narzędzia dostarczane przez system operacyjny, co pozwala ograniczyć rozmiar kodu programu.
 Wadą tego mechanizmu jest niemożność jego wykorzystania na platformie Windows. 
+
 \section{Podsumowanie}
 Zaprojektowana i~stworzona klasa spełnia wszystkie wstępne założenia projektowe.\\
 Zapewnia odpowiednie funkcjonalności, takie jak zapisywanie i~odczytywanie postępów pracy, pauzowanie, czy wznawianie obliczeń.

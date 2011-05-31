@@ -12,8 +12,11 @@
 using namespace std;
 
 /** 
- * Data - klasa do przechowywania wynikow; 
- *        musi implementować metodę serialize oraz komplet konstruktorów.
+ * Most important part of the project.
+ * Template class to manage long calculations.
+ * Template's parameter is a structure which holds results.
+ * The class gives means to perform calculations, save and load results, 
+ * pause calculations and stop them at will without losing progres.  
  */
 template<class Data>
 class CounterBase : public boost::signals::trackable {
@@ -24,16 +27,33 @@ private:
     void serialize(Archive & ar, const unsigned int version) {
         ar & _data;
     }
-
+    /*
+    * Time interval between saving the progress
+    */
     boost::posix_time::time_duration deltat_;
+    
+    /*
+    * Flags used to stop calculations, after user's command or after finishing the job.
+    */
     volatile bool stop;
     volatile bool finished;
+
+    /*
+     * Threads managment.
+     */
     boost::thread thrd;
     string serializationFilePath;
     boost::mutex serializationMutex;
-    Data _data;
     mutable boost::mutex dataAccessMutex;
 
+    /*
+     * Object which stores calculations results.
+     */
+    Data _data;
+
+    /*
+     * Internal signals managment.
+     */
     boost::signal<void () > signalStarted;
     boost::signal<void () > signalStopped;
     boost::signal<void () > signalFinished;
@@ -41,10 +61,6 @@ private:
     boost::signal<void () > signalSaved;
 
 public:
-    /**
-     * @param startData  - initial data
-     * @param serialPeriod - period (in seconds) of saving state of calculations
-     */
     CounterBase(const Data& startData, long serialPeriod = 5);
     CounterBase(long serialPeriod = 5);
 
@@ -83,39 +99,20 @@ public:
      * @param load - if true, load state from file
      */
     void setSerializationFile(string filePath, bool load = true);
-    /**
-     * sets finished state to given argument; for use in void Calculate()
-     * @param finished
-     */
-    void setFinished(bool finished = true);
-    /**
-     * Checks whether calculations are finished or not
-     * @return true if finished
-     */
+    void setFinished(bool finished);
     bool isFinished() const;
 
-    /**
-     * Functions to add callbacks in events of:
-     * * starting calculations (real start, not scheduling)
-     * * stopping calculations (real)
-     * * calculations finished
-     * * single step of calculations finished
-     * * data being saved to disk
-     * @param slot callback function void funName()
-     * @return signals::connection object that can be used to break connection
-     */
     boost::signals::connection addSlotStarted(void (*slot)());
     boost::signals::connection addSlotStopped(void (*slot)());
     boost::signals::connection addSlotFinished(void (*slot)());
     boost::signals::connection addSlotStepDone(void (*slot)());
     boost::signals::connection addSlotSaved(void (*slot)());
     Data getDataCopy() const;
+
+
 protected:
 
-    /**
-     * For use in Calculate(), gives access to data structure
-     * @return
-     */
+
     Data& data();
 
     /**
