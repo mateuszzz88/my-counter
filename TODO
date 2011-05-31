@@ -1,10 +1,12 @@
 TODO
+5. Ujednolicić komentarze(Dotyczy CounterBaseFuns.hpp)
+6. Wyrzucić nieużywany kod (Dotyczy CounterBaseFuns.hpp)
+
+Zrobione:
 1. wyjaśnić co z SignalCatcher - do czego jest i czy na pewno ma tak wyglądać.
    W końcu do sygnału można podłączyć dowolną funkcję (publiczną) z klasy CounterBase.
    Jakieś szczególne uproszczenia nie są chyba konieczne - jeśli użytkownik używa
    sygnałów to będzie też wiedział jak je połączyć do tych funkcji
 2. jak wygląda serializacja w przypadku wskaźników?
-
-Zrobione:
 3. testy jednostkowe
 4. może jakieś rozdzielenie na foldery by był większy porządek

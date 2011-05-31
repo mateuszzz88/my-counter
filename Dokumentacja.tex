@@ -44,7 +44,8 @@ struct HelpStruct
 {
   bool istotna1_, istotna2_, nieistotna_;
   HelpStruct(bool a, bool b, bool c): istotna1_(a), istotna2_(b), nieistotna_(c) {}
-  HelpStruct(const HelpStruct& hs): istotna1_(hs.istotna1_), istotna2_(hs.istotna2_), nieistotna_(hs.nieistotna_) {};
+  HelpStruct(const HelpStruct& hs): istotna1_(hs.istotna1_), istotna2_(hs.istotna2_), 
+                                    nieistotna_(hs.nieistotna_) {};
 
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version)
@@ -152,7 +153,7 @@ Użytkownik końcowy nie musi wiedzieć, w~jakim formacie zapisano dane, ani jak
 Jego rola ogranicza się do wylistowania zmiennych, które mają być zapisane. 
 \subsection{Komunikacja}
 Aby możliwe było pauzowanie i~przerywanie obliczeń konieczne jest zapewnienie użytkownikowi możliwości przesłania do programu odpowiedniej informacji.
-Język C++, w~przeciwieństwie np. do Javy nie jest językiem zapewniającym obsługę zdarzeń i~nie przewiduje stosownia listenerów.\\
+Język C++, w~przeciwieństwie np. do Javy nie jest językiem zapewniającym obsługę zdarzeń i~nie przewiduje stosowania listenerów.\\
 Aby zapewnić porządaną funkcjonalność wykorzystujemy sygnały systemu UNIX, zapisane w~bibliotece \texttt{signal.h}.
 W~dołączonych do klasy plikach znajdują się funkcje globalne przechwytujące odpowiednie sygnały i~zmieniające wartość odpowiednich zmiennych.
 Mechanizm ten pozwala uniknąć niewygodnego w~tym przypadku mechanizmu funkcji i~zmiennych statycznych, a~także pozwala użytkownikowi w~łatwy sposób stworzyć własne funkcje sterujące, jeśli pojawią się wymagania inne od tych zawartych w~założeniach projektu.\\
