@@ -1,0 +1,176 @@
+\documentclass[a4paper]{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{marvosym}
+\usepackage[vcentering,dvips]{geometry}
+\geometry{papersize={210mm,270mm},total={161mm,231mm}}
+\usepackage{setspace}
+
+\author{Przemysław Ogorzałek\\Mateusz Lewicki}
+\title{ZPR\\Projekt\\Klasa bazowa do obliczeń\\Dokumentacja końcowa}
+
+\begin{document}
+\maketitle
+\section{Opis zagadnienia}
+Celem projektu jest stworzenie klasy bazowej zapewniającej interfejs do~obsługi złożonych czasowo obliczeń prowadzonych przez komputer.\\
+Zadaniem klasy jest dostarczenie funkcjonalności umożliwiających przerywanie i~wznawianie obliczeń, możliwość zapisu do pliku postępów pracy zarówno na polecenie użytkownika jak i~co~pewien interwał czasowy. 
+Zapisane wyniki można odczytać celem kontynuowania obliczeń od danego punktu.\\
+Użytkownik końcowy powinien jak najmniej ingerować w~kod klasy, aby przystosować ją do swoich celów.
+W~założeniu nie powinien zmieniać więcej niż jednej lub dwóch metod.\\
+Nie jest podana ani liczba ani typ zmiennych, które są wykorzystane do zapisu wyników.
+Decyduje o~tym użytkownik końcowy.
+\section{Interfejs programu}
+\subsection{Implementacja}
+Założeniem które przyświeca konstrukcji klasy jest ograniczenie konieczności ingerencji w~kod przez użtykownika do niezbędnego minimum.\\
+Aby klasa działała poprawnie, użytkownik musi jedynie dostarczyć strukturę, w~której zapisywane będą wyniki, oraz metodę wykonującą kolejne kroki obliczeń.
+W~szczególnych przypadkach, gdy działania nie da się podzielić na mniejsze, kolejno wykonywane identyczne kroki, może zajść konieczność wprowadzenia zmian do metody zarządzającej obliczeniami.\\
+~\\
+Struktura zapisująca wyniki jest w~całości stworzona przez użytkownika końcowego. 
+Do klasy przeprowadzającej obliczenia przekazywana jest ona jako parametr szablonu. \\
+Wewnątrz niej użytkownik może umieścić dowolną liczbę dowolnego typu zmiennych. 
+Odwoływać się do nich będzie jedynie wewnątrz funkcji prowadzącej obliczenia, którą sam musi zaimplementować.\\
+Jedynym ograniczeniem nałożonym na niego jest konieczność umieszczenia wewnątrz klasy funkcji umożliwiającej serializację.
+Wewnątrz tej funkcji muszą znaleźć się odwołania do wszystkich zmiennych, których wartość jest konieczna do późniejszego kontynuowania obliczeń na podstawie danych wczytanych z~pliku.
+Jeśli zmienne są obiektami klas lub struktur zdefiniowanych przez użytkownika, to wewnątrz tych klas również muszą znaleźć się funkcje odpowiedzialne za serializację.\\
+Wymagany jest również konstruktor kopiujący.\\
+~\\
+Przykład:\\
+Wyniki zapisywane są w~obiekcie struktury \texttt{DataStruct}, na dwóch zmiennych typu \texttt{int} i~obiekcie struktury \texttt{HelpStruct}, który ma trzy zmienne typu \texttt{bool}, z~których dwie przechowują wynik obliczeń, a~trzecia jest używana do innych celów i~zapisywanie jej wartości do pliku jest zbędne.\\
+Implementacja takich struktur wygląda następująco:
+\begin{verbatim}
+struct HelpStruct
+{
+  bool istotna1_, istotna2_, nieistotna_;
+  HelpStruct(bool a, bool b, bool c): istotna1_(a), istotna2_(b), nieistotna_(c) {}
+  HelpStruct(const HelpStruct& hs): istotna1_(hs.istotna1_), istotna2_(hs.istotna2_), nieistotna_(hs.nieistotna_) {};
+
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & istotna1_;
+    ar & istotna2_;
+  }
+  
+};
+
+struct DataStruct
+{
+  int x_,y_;
+  HelpStruct hs_;
+  DataStruct(int a, int b, HelpStruct hest): x_(a), y_(b), hs_(hest) {};
+  DataStruct(const DataStruct& ds): x_(ds.x_), y_(ds.y_), hs_(ds.hs_) {};
+
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & x_;
+    ar & y_;
+    ar & hs_;
+  }
+};
+
+\end{verbatim}
+Taka implementacja zapewnia zarówno możliwość zapisywania wartości odpowiednich składowych do pliku, jak również ich odczytania.
+Funkcja serializacji ma stałą strukturę i~nie wymaga niczego poza wyszczególnieniem zmiennych w~sposób przedstawiony powyżej.
+Jest ona później wywoływana przez program w~celu zapisania lub odczytania wartości zmiennych.\\
+Jeśli w~strukturze użytkownika znajdują się wskaźniki, należy podać w~funkcji serializacji ich wartość, przykładowo:
+\begin{verbatim}
+ar & *wskaznik;
+\end{verbatim}
+Składowa przechowująca obiekt struktury podanej przez użytkownika nazywa się \texttt{data}.\\
+Dla typów wbudowanych nie jest konieczne tworzenie funkcji serializacji, więc jeśli do zapisu wyników wystarczy nam na przykład liczba typu \texttt{int}, tworzenie osobnej struktury jest zbędne.\\
+~\\
+Aby przeprowadzić obliczenia konieczna jest również własna implementacja metody \texttt{Calculate()} będącej częścią klasy \texttt{CounterBase}. 
+Dokonuje się tego poprzez mechanizm szablonów.\\
+~\\
+Przykład dla struktury \texttt{DataStruct}:
+\begin{verbatim}
+//Deklaracja
+template<>
+CounterBase<DataStruct>::Calculate();
+//...
+//Implementacja
+template<>
+CounterBase<DataStruct>::Calculate()
+{
+ //Jakieś obliczenia
+ //Do składowych struktury odwołujemy się następująco
+ //data.nazwa_pola
+ //O zakończeniu obliczeń informujemy zmieniając wartość zmiennej
+ //this->stop
+ //na przeciwną
+
+} 
+\end{verbatim}
+Aby implementacja działała poprawnie obliczenia muszą być podzielone na małe etapy.
+Każde wywołanie funkcji \texttt{Calculate()} to przejście przez kolejny etap.\\
+Zapisanie postępów pracy dokonuje się pomiędzy kolejnymi wywołaniami funkcji, co pewien określony czas.
+Odstęp między kolejnymi zapisami zachowany jest zatem z~dokładnością do czasu trwania pojedynczego wywołania funkcji.\\
+Po zakończeniu obliczeń należy zmienić wartość pola klasy \texttt{stop} należącego do klasy \texttt{CounterBase} na przeciwną.
+Wynik końcowy zostanie wówczas zapisany, a~obliczenia zakończą się.\\
+~\\
+W~przypadku, gdzy podzielenie obliczeń na wiele wywołań funkcji \texttt{Calculate()} jest niemożliwe, konieczna jest ponowna implementacja funkcji \texttt{doCalculate()}, zarządzającej obliczeniami i~zapisywaniem wyników. 
+To jednak zaleca się jedynie doświadczonym programistom, ponieważ wymaga to wnikliwej analizy kodu klasy.
+\subsection{Kompilacja}
+Do kodu źródłowego klasy dołączone są przykłądowe pliki sterujące programów \texttt{make} i~\texttt{Scons}.\\
+Aby kompliacja przebiegła pomyślnie kompilator musi mieć dostęp do bibliotek \texttt{boost}, w~szczególności:
+\begin{itemize}
+\item \texttt{boost::serialization}
+\item \texttt{boost::thread} 
+\item \texttt{boost::bind}
+\item \texttt{boost::date\_time}
+\end{itemize}
+\subsection{Prowadzenie obliczeń}
+Użytkownik komunikuje się z~programem poprzez wpisywanie w~konsoli odpowiednich komend, jak i~poprzez sygnały systemowe. 
+Na początku działania programu lub po wpisaniu polecenia \texttt{help} wyświetla się lista dostępnych poleceń i~sygnałów\footnote{W~systemach opartycha na UNIX sygnały systemowe wysyła się poleceniem\\\texttt{kill -SYGNAŁ PID}\\gdzie \texttt{SYGNAŁ} to nazwa sygnału, a \texttt{PID} to numer identyfikacyjny procesu, w ramach którego działa program.\\Listę procesów wraz z~numerami można wyświetlić poleceniem\\\texttt{ps -a}}.\\
+Obliczenia mogą być prowadzone bądź w~wątku głównym, bądź w~utworzonym specjalnie do tego celu.
+
+\section{Działanie klasy bazowej}
+W~zależności od potrzeb wczytywany jest plik z~ostatnio zapisanym wynikiem lub obliczenia zaczynane są od początku.
+Co pewien czas postęp obliczeń jest zapisywany. 
+Zapisu dokonać można również wysyłając sygnał \texttt{SIGUSR1}.\\
+Aby zapuzować obliczenia wysyłamy sygnał \texttt{SIGTSTP}\footnote{Zwykle można tego dokonać poprzez skrót klawiaturowy \texttt{CTRL+z}}. 
+Nawet jeśli obliczenia są zapauzowane, aktualny wynik nadal jest zapisywany.
+Aby wznowić działanie programu, albo wysyłamy ponownie \texttt{SIGTSTP}, albo wysyłamy sygnał \texttt{SIGCONT}.
+Wysłanie \texttt{SIGCONT} jeśli program działa jest ignorowane.\\
+Aby przerwać obliczenia wpisujemy komendę stop, lub wysyłamy jeden z~sygnałów: \texttt{SIGINT}\footnote{Zwykle można tego dokonać poprzez skrót klawiaturowy \texttt{CTRL+c}} lub \texttt{SIGTERM}.
+Wynik obliczeń zostanie wtedy zapisany, a~wątki prowadzące obliczenia zakończą się.\\
+~\\
+Aby przeprowadzać kolejne kroki obliczeń, funkcja \texttt{doCalculate()} odczytuje wartość poszczególnych flag i~w~zależności od ich wartości zapisuje wynik, wywołuje funkcję \texttt{Calculate()} lub przerywa wątek.
+\section{Napotkane problemy}
+\subsection{Serializacja}
+Aby klasa poprawnie realizowała założenia projektu musi spełnić dwa przeciwstawne warunki: umożliwić zapis dowolnego typu danych do pliku i~nałożyć na użytkownika końcowego jak najmniej obowiązków związanych z~implementacją klasy.\\
+W~trywialnym przypadku wymagałoby to zdefiniowania dla struktury z~danymi operatorów strumieniowego wejścia i~wyjścia, co mogłoby być uciążliwe, zwłaszcza dla skomplikowanych klas.
+Wymagałoby to również dokładnego przemyślenia jak wyglądać powinien plik przechowujący dane.\\
+Kompromisem jest tu wprowadzenie serializacji, to jest zamiany danych na postać bajtową i~zapisanie jej do pliku, a~następnie powtórne jej odczytanie.\\
+Mechanizm ten wymaga jedynie zimplementowania prostej funkcji publicznej w~strukturze przechowującej dane.\\
+W~przeciwieństwie np. do języka Java, C++ nie zapewnia jednak takiej możliwości, ponieważ nie jest językiem czysto obiektowym.
+Rozwiązaniem jest tu biblioteka \texttt{boost::serialization}, która wprowadza odpowiednie mechanizmy zapisu i~odczytu pliku.
+Użytkownik końcowy nie musi wiedzieć, w~jakim formacie zapisano dane, ani jak dokładnie działa ten mechanizm. 
+Jego rola ogranicza się do wylistowania zmiennych, które mają być zapisane. 
+\subsection{Komunikacja}
+Aby możliwe było pauzowanie i~przerywanie obliczeń konieczne jest zapewnienie użytkownikowi możliwości przesłania do programu odpowiedniej informacji.
+Język C++, w~przeciwieństwie np. do Javy nie jest językiem zapewniającym obsługę zdarzeń i~nie przewiduje stosownia listenerów.\\
+Aby zapewnić porządaną funkcjonalność wykorzystujemy sygnały systemu UNIX, zapisane w~bibliotece \texttt{signal.h}.
+W~dołączonych do klasy plikach znajdują się funkcje globalne przechwytujące odpowiednie sygnały i~zmieniające wartość odpowiednich zmiennych.
+Mechanizm ten pozwala uniknąć niewygodnego w~tym przypadku mechanizmu funkcji i~zmiennych statycznych, a~także pozwala użytkownikowi w~łatwy sposób stworzyć własne funkcje sterujące, jeśli pojawią się wymagania inne od tych zawartych w~założeniach projektu.\\
+Wykorzystywane sygnały systemowe to:
+\begin{itemize}
+\item \texttt{SIGINT} - przerywa obliczenia i~zapisuje wynik do pliku
+\item \texttt{SIGTERM} - przerywa obliczenia i~zapisuje wynik do pliku
+\item \texttt{SIGTSTP} - pauzuje i~wznawia obliczenia
+\item \texttt{SIGCONT} - wznawia zapauzowane obliczenia
+\item \texttt{SIGUSR1} - zapisuje wynik obliczeń do pliku
+\end{itemize}
+Mechanizm ten pozwala w~łatwy sposób przesyłać odpowiednie informacje i~pozwala wykorzystać narzędzia dostarczane przez system operacyjny, co pozwala ograniczyć rozmiar kodu programu.
+Wadą tego mechanizmu jest niemożność jego wykorzystania na platformie Windows. 
+\section{Podsumowanie}
+Zaprojektowana i~stworzona klasa spełnia wszystkie wstępne założenia projektowe.\\
+Zapewnia odpowiednie funkcjonalności, takie jak zapisywanie i~odczytywanie postępów pracy, pauzowanie, czy wznawianie obliczeń.
+Wykorzystuje przy tym najnowsze rozwiązania programistyczne, zawarte w~bibliotece \texttt{boost} i~narzędzia systemu operacyjnego w~postaci sygnałów.\\
+Aby wykorzystać ją do swoich celów użytkownik musi jedynie zaimplementować strukturę przechowującą dane wynikowe zawierającą funkcję serializacji i~funkcję wykonującą kolejne kroki obliczeń.\\
+Wszystkie te cechy sprawiają, że można niewielkim nakładem pracy wykorzystać ją do zabezpieczenia swoich obliczeń przez niespodziewaną utratą wyników.
+
+\end{document}
