@@ -53,7 +53,7 @@ int test_main( int, char *[] )
     BOOST_CHECK(!g.isFinished());
     d = g.getDataCopy();
     BOOST_CHECK(d.lastChecked==6);
-    BOOST_CHECK(d.lastFound==5);
+    BOOST_CHECK(*d.lastFound==5);
     BOOST_CHECK(callsStepDone==4);
     BOOST_CHECK(callsSaved==1);
 
@@ -71,7 +71,7 @@ int test_main( int, char *[] )
     //assert data is the same
     BigPrimeData d2 = h.getDataCopy();
     BOOST_CHECK(d.lastChecked==d2.lastChecked);
-    BOOST_CHECK(d.lastFound==d2.lastFound);
+    BOOST_CHECK(*d.lastFound==*d2.lastFound);
     
     h.startCalculations();
     h.join();
@@ -80,7 +80,7 @@ int test_main( int, char *[] )
     BOOST_CHECK(callsFinished    == 1);
     BigPrimeData d3 = h.getDataCopy();
     BOOST_CHECK(d3.lastChecked==100);
-    BOOST_CHECK(d3.lastFound==97);
+    BOOST_CHECK(*d3.lastFound==97);
 
 
     return 0;
